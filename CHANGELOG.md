@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/opendata-kr/narajangteo-prespec-mcp/compare/v0.1.1...v0.2.0) (2026-07-07)
+
+
+### Features
+
+* **server:** 레지스트리 아이콘 추가 ([77f7117](https://github.com/opendata-kr/narajangteo-prespec-mcp/commit/77f7117e5d8c0c827a88e8cc8b99a3e35aa107ca))
+
 ## [0.1.1](https://github.com/opendata-kr/narajangteo-prespec-mcp/compare/v0.1.0...v0.1.1) (2026-07-07)
 
 
