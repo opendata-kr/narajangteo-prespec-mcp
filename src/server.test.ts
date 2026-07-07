@@ -42,4 +42,26 @@ describe("createServer", () => {
     await client.close();
     await server.close();
   });
+
+  it("모든 도구가 조회 전용 애노테이션(readOnlyHint·openWorldHint)과 title을 노출한다", async () => {
+    const server = createServer(gatewayClient);
+    const [clientTransport, serverTransport] =
+      InMemoryTransport.createLinkedPair();
+    const client = new Client({ name: "test-client", version: "1.0.0" });
+
+    await Promise.all([
+      server.connect(serverTransport),
+      client.connect(clientTransport),
+    ]);
+
+    const { tools } = await client.listTools();
+    for (const t of tools) {
+      expect(t.annotations?.readOnlyHint, `${t.name} readOnlyHint`).toBe(true);
+      expect(t.annotations?.openWorldHint, `${t.name} openWorldHint`).toBe(true);
+      expect(t.title, `${t.name} title`).toBeTruthy();
+    }
+
+    await client.close();
+    await server.close();
+  });
 });

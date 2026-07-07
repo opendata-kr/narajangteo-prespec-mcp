@@ -9,7 +9,9 @@ export const searchPrespecsInputShape = {
   kind: z
     .array(z.enum(["cnstwk", "servc", "thng", "frgcpt"]))
     .optional()
-    .describe("업무구분 배열. 미지정 시 전 구분(공사/용역/물품/외자) 검색"),
+    .describe(
+      "업무구분: cnstwk=공사, servc=용역, thng=물품, frgcpt=외자. 미지정 시 전 구분 병렬 조회",
+    ),
   startDate: z.string().optional().describe("조회 시작일 YYYYMMDD"),
   endDate: z.string().optional().describe("조회 종료일 YYYYMMDD"),
   dateType: z

@@ -12,7 +12,9 @@ export const searchAdvancedInputShape = {
   kind: z
     .array(z.enum(["cnstwk", "servc", "thng", "frgcpt"]))
     .optional()
-    .describe("업무구분 배열. 미지정 시 전 구분 검색"),
+    .describe(
+      "업무구분: cnstwk=공사, servc=용역, thng=물품, frgcpt=외자. 미지정 시 전 구분 병렬 조회",
+    ),
   startDate: z.string().optional().describe("접수 시작일 YYYYMMDD"),
   endDate: z.string().optional().describe("접수 종료일 YYYYMMDD"),
   specRegistNo: z
@@ -27,7 +29,10 @@ export const searchAdvancedInputShape = {
   demandInstitution: z.string().optional().describe("수요기관명"),
   productName: z.string().optional().describe("품명(사업명)/물품분류명"),
   detailProductCode: z.string().optional().describe("세부품명번호"),
-  swBusinessYn: z.string().optional().describe("SW사업 여부(Y/N)"),
+  swBusinessYn: z
+    .enum(["Y", "N"])
+    .optional()
+    .describe("SW사업 대상 여부: Y=대상, N=비대상"),
   page: z.number().int().min(1).optional().describe("페이지 번호(기본 1)"),
   pageSize: z.number().int().min(1).max(100).optional().describe("페이지당 건수(기본 10)"),
 };
@@ -42,7 +47,7 @@ export type SearchAdvancedArgs = {
   demandInstitution?: string;
   productName?: string;
   detailProductCode?: string;
-  swBusinessYn?: string;
+  swBusinessYn?: "Y" | "N";
   page?: number;
   pageSize?: number;
 };

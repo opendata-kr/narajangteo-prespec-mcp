@@ -9,7 +9,9 @@ export const searchByProductInputShape = {
   kind: z
     .array(z.enum(["cnstwk", "servc", "thng", "frgcpt"]))
     .optional()
-    .describe("업무구분 배열. 미지정 시 전 구분 검색"),
+    .describe(
+      "업무구분: cnstwk=공사, servc=용역, thng=물품, frgcpt=외자. 미지정 시 전 구분 병렬 조회",
+    ),
   productName: z.string().optional().describe("품명(사업명)/물품분류명"),
   detailProductCode: z.string().optional().describe("세부품명번호"),
   detailProductName: z.string().optional().describe("세부품명"),
