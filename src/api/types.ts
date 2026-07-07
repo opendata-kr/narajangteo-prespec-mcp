@@ -1,5 +1,12 @@
-// ①②③④ 공통 응답. 물품·외자에만 있는 세부품목 중첩(prdctDtlList)은 실호출 검증(설계 §9-3)
-// 후 구조화해 필드로 추가하며, 그전까지는 이 타입에서 제외한다(formatPrespec가 매핑하지 않음).
+// 세부품목. raw prdctDtlList의 packed string `[순번^세부품명번호^세부품명]`을 파싱한 항목.
+export interface ProductDetail {
+  itemSeq: string;
+  detailProductNo: string;
+  detailProductName: string;
+}
+
+// ①②③④ 공통 응답. 물품·외자 응답의 세부품목 중첩(prdctDtlList, packed string)은
+// productDetailList 배열로 파싱한다. 공사·용역 응답엔 없어 빈 배열이 된다.
 export interface Prespec {
   specRegistNo: string;
   productName: string;
@@ -18,6 +25,7 @@ export interface Prespec {
   officialName: string;
   officialTel: string;
   swBusinessYn: string;
+  productDetailList: ProductDetail[];
 }
 
 // ⑤ 규격서 의견/답변.

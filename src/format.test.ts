@@ -47,6 +47,32 @@ describe("formatPrespec", () => {
     expect(p.productName).toBe("");
     expect(p.orderInstitution).toBe("");
   });
+
+  it("prdctDtlList packed string을 productDetailList 배열로 파싱한다", () => {
+    const p = formatPrespec({
+      bfSpecRgstNo: "X",
+      prdctDtlList: "[1^4323250501^교육용소프트웨어]",
+    });
+    expect(p.productDetailList).toEqual([
+      { itemSeq: "1", detailProductNo: "4323250501", detailProductName: "교육용소프트웨어" },
+    ]);
+  });
+
+  it("prdctDtlList 다건(],[ 구분)을 파싱한다", () => {
+    const p = formatPrespec({
+      bfSpecRgstNo: "X",
+      prdctDtlList: "[1^111^가방],[2^222^의자]",
+    });
+    expect(p.productDetailList).toEqual([
+      { itemSeq: "1", detailProductNo: "111", detailProductName: "가방" },
+      { itemSeq: "2", detailProductNo: "222", detailProductName: "의자" },
+    ]);
+  });
+
+  it("prdctDtlList 없거나 빈 값이면 빈 배열", () => {
+    expect(formatPrespec({ bfSpecRgstNo: "X" }).productDetailList).toEqual([]);
+    expect(formatPrespec({ bfSpecRgstNo: "X", prdctDtlList: "" }).productDetailList).toEqual([]);
+  });
 });
 
 describe("formatPrespecOpinion", () => {

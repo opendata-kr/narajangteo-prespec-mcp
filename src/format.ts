@@ -1,5 +1,17 @@
 import type { RawItem } from "@opendata-kr/core";
-import type { Prespec, PrespecOpinion } from "./api/types.js";
+import type { Prespec, PrespecOpinion, ProductDetail } from "./api/types.js";
+
+// prdctDtlList packed string `[순번^세부품명번호^세부품명],[...]`을 배열로 파싱한다.
+function parseProductDetails(raw: string): ProductDetail[] {
+  const blocks = raw.match(/\[([^\]]*)\]/g);
+  if (!blocks) return [];
+  return blocks.map((b) => {
+    const [itemSeq = "", detailProductNo = "", detailProductName = ""] = b
+      .slice(1, -1)
+      .split("^");
+    return { itemSeq, detailProductNo, detailProductName };
+  });
+}
 
 export function formatPrespec(raw: RawItem): Prespec {
   const pick = (k: string): string => raw[k] ?? "";
@@ -21,6 +33,7 @@ export function formatPrespec(raw: RawItem): Prespec {
     officialName: pick("ofclNm"),
     officialTel: pick("ofclTelNo"),
     swBusinessYn: pick("swBizObjYn"),
+    productDetailList: parseProductDetails(pick("prdctDtlList")),
   };
 }
 
