@@ -1,0 +1,49 @@
+import { z } from "zod";
+import type { DataGoKrClient, Params } from "@opendata-kr/core";
+import { ALL_KINDS, type Kind, opinionOp } from "../api/endpoints.js";
+import { formatPrespecOpinion } from "../format.js";
+import type { PrespecOpinion } from "../api/types.js";
+import { dateRangeParams, pagingParams, runList, type ListResult } from "./runList.js";
+
+export const getOpinionsInputShape = {
+  kind: z
+    .array(z.enum(["cnstwk", "servc", "thng", "frgcpt"]))
+    .optional()
+    .describe("업무구분 배열. 미지정 시 전 구분 검색"),
+  specRegistNo: z
+    .string()
+    .optional()
+    .describe("사전규격등록번호(지정 시 inqryDiv=2, 기간보다 우선)"),
+  startDate: z.string().optional().describe("조회 시작일 YYYYMMDD"),
+  endDate: z.string().optional().describe("조회 종료일 YYYYMMDD"),
+  page: z.number().int().min(1).optional().describe("페이지 번호(기본 1)"),
+  pageSize: z.number().int().min(1).max(100).optional().describe("페이지당 건수(기본 10)"),
+};
+
+export type GetOpinionsArgs = {
+  kind?: Kind[];
+  specRegistNo?: string;
+  startDate?: string;
+  endDate?: string;
+  page?: number;
+  pageSize?: number;
+};
+
+// ⑤ 의견의 inqryDiv는 1(등록일시)/2(사전규격등록번호)만 있다.
+export function runGetOpinions(
+  client: DataGoKrClient,
+  args: GetOpinionsArgs,
+): Promise<ListResult<PrespecOpinion>> {
+  const kinds = args.kind ?? [...ALL_KINDS];
+  const params: Params = pagingParams(args.page, args.pageSize);
+
+  if (args.specRegistNo) {
+    params.inqryDiv = "2";
+    params.bfSpecRgstNo = args.specRegistNo;
+  } else if (args.startDate || args.endDate) {
+    params.inqryDiv = "1";
+    Object.assign(params, dateRangeParams(args.startDate, args.endDate));
+  }
+
+  return runList(client, opinionOp, params, kinds, args, formatPrespecOpinion);
+}
