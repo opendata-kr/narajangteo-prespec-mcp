@@ -1,3 +1,5 @@
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
 import { describe, expect, it, vi } from "vitest";
 import type { DataGoKrClient } from "@opendata-kr/core";
 import { createServer } from "./server.js";
@@ -11,7 +13,33 @@ describe("createServer", () => {
   it("McpServer 인스턴스를 생성한다", () => {
     const server = createServer(gatewayClient);
     expect(server).toBeDefined();
-    // McpServer는 connect 메서드를 가진다
     expect(typeof server.connect).toBe("function");
+  });
+
+  it("사전규격 5툴을 등록한다", async () => {
+    const server = createServer(gatewayClient);
+    const [clientTransport, serverTransport] =
+      InMemoryTransport.createLinkedPair();
+    const client = new Client({ name: "test-client", version: "1.0.0" });
+
+    await Promise.all([
+      server.connect(serverTransport),
+      client.connect(clientTransport),
+    ]);
+
+    const { tools } = await client.listTools();
+    const names = tools.map((t) => t.name).sort();
+    expect(names).toEqual(
+      [
+        "search_prespecs",
+        "search_prespecs_by_institution",
+        "search_prespecs_by_product",
+        "search_prespecs_advanced",
+        "get_prespec_opinions",
+      ].sort(),
+    );
+
+    await client.close();
+    await server.close();
   });
 });
