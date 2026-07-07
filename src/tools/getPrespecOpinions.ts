@@ -22,14 +22,8 @@ export const getOpinionsInputShape = {
   pageSize: z.number().int().min(1).max(100).optional().describe("페이지당 건수(기본 10)"),
 };
 
-export type GetOpinionsArgs = {
-  kind?: Kind[];
-  specRegistNo?: string;
-  startDate?: string;
-  endDate?: string;
-  page?: number;
-  pageSize?: number;
-};
+// inputSchema에서 파생해 shape와 타입의 원천을 하나로 유지한다.
+export type GetOpinionsArgs = z.infer<z.ZodObject<typeof getOpinionsInputShape>>;
 
 // ⑤ 의견의 inqryDiv는 1(등록일시)/2(사전규격등록번호)만 있다.
 export function runGetOpinions(

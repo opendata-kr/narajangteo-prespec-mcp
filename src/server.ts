@@ -4,27 +4,22 @@ import { VERSION } from "./version.js";
 import {
   runSearchPrespecs,
   searchPrespecsInputShape,
-  type SearchPrespecsArgs,
 } from "./tools/searchPrespecs.js";
 import {
   runSearchByInstitution,
   searchByInstitutionInputShape,
-  type SearchByInstitutionArgs,
 } from "./tools/searchPrespecsByInstitution.js";
 import {
   runSearchByProduct,
   searchByProductInputShape,
-  type SearchByProductArgs,
 } from "./tools/searchPrespecsByProduct.js";
 import {
   runSearchAdvanced,
   searchAdvancedInputShape,
-  type SearchAdvancedArgs,
 } from "./tools/searchPrespecsAdvanced.js";
 import {
   runGetOpinions,
   getOpinionsInputShape,
-  type GetOpinionsArgs,
 } from "./tools/getPrespecOpinions.js";
 
 function textResult(payload: unknown, isError = false) {
@@ -63,7 +58,7 @@ export function createServer(client: DataGoKrClient): McpServer {
       inputSchema: searchPrespecsInputShape,
       annotations: READONLY,
     },
-    (args) => guard(() => runSearchPrespecs(client, args as SearchPrespecsArgs)),
+    (args) => guard(() => runSearchPrespecs(client, args)),
   );
 
   server.registerTool(
@@ -75,8 +70,7 @@ export function createServer(client: DataGoKrClient): McpServer {
       inputSchema: searchByInstitutionInputShape,
       annotations: READONLY,
     },
-    (args) =>
-      guard(() => runSearchByInstitution(client, args as SearchByInstitutionArgs)),
+    (args) => guard(() => runSearchByInstitution(client, args)),
   );
 
   server.registerTool(
@@ -88,7 +82,7 @@ export function createServer(client: DataGoKrClient): McpServer {
       inputSchema: searchByProductInputShape,
       annotations: READONLY,
     },
-    (args) => guard(() => runSearchByProduct(client, args as SearchByProductArgs)),
+    (args) => guard(() => runSearchByProduct(client, args)),
   );
 
   server.registerTool(
@@ -100,7 +94,7 @@ export function createServer(client: DataGoKrClient): McpServer {
       inputSchema: searchAdvancedInputShape,
       annotations: READONLY,
     },
-    (args) => guard(() => runSearchAdvanced(client, args as SearchAdvancedArgs)),
+    (args) => guard(() => runSearchAdvanced(client, args)),
   );
 
   server.registerTool(
@@ -112,7 +106,7 @@ export function createServer(client: DataGoKrClient): McpServer {
       inputSchema: getOpinionsInputShape,
       annotations: READONLY,
     },
-    (args) => guard(() => runGetOpinions(client, args as GetOpinionsArgs)),
+    (args) => guard(() => runGetOpinions(client, args)),
   );
 
   return server;

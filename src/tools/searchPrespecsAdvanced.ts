@@ -37,20 +37,8 @@ export const searchAdvancedInputShape = {
   pageSize: z.number().int().min(1).max(100).optional().describe("페이지당 건수(기본 10)"),
 };
 
-export type SearchAdvancedArgs = {
-  kind?: Kind[];
-  startDate?: string;
-  endDate?: string;
-  specRegistNo?: string;
-  refNo?: string;
-  noticeInstitution?: string;
-  demandInstitution?: string;
-  productName?: string;
-  detailProductCode?: string;
-  swBusinessYn?: "Y" | "N";
-  page?: number;
-  pageSize?: number;
-};
+// inputSchema에서 파생해 shape와 타입의 원천을 하나로 유지한다.
+export type SearchAdvancedArgs = z.infer<z.ZodObject<typeof searchAdvancedInputShape>>;
 
 export function runSearchAdvanced(
   client: DataGoKrClient,

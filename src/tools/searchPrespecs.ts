@@ -32,15 +32,8 @@ export const searchPrespecsInputShape = {
     .describe("페이지당 건수(기본 10)"),
 };
 
-export type SearchPrespecsArgs = {
-  kind?: Kind[];
-  startDate?: string;
-  endDate?: string;
-  dateType?: "regist" | "change";
-  specRegistNo?: string;
-  page?: number;
-  pageSize?: number;
-};
+// inputSchema에서 파생해 shape와 타입의 원천을 하나로 유지한다(수동 중복·드리프트 방지).
+export type SearchPrespecsArgs = z.infer<z.ZodObject<typeof searchPrespecsInputShape>>;
 
 export function runSearchPrespecs(
   client: DataGoKrClient,

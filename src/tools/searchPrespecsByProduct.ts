@@ -21,16 +21,8 @@ export const searchByProductInputShape = {
   pageSize: z.number().int().min(1).max(100).optional().describe("페이지당 건수(기본 10)"),
 };
 
-export type SearchByProductArgs = {
-  kind?: Kind[];
-  productName?: string;
-  detailProductCode?: string;
-  detailProductName?: string;
-  startDate?: string;
-  endDate?: string;
-  page?: number;
-  pageSize?: number;
-};
+// inputSchema에서 파생해 shape와 타입의 원천을 하나로 유지한다.
+export type SearchByProductArgs = z.infer<z.ZodObject<typeof searchByProductInputShape>>;
 
 export function runSearchByProduct(
   client: DataGoKrClient,
