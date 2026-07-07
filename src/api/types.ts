@@ -1,5 +1,5 @@
-// ①②③④ 공통 응답. 물품·외자에만 있는 세부품목 중첩은 실호출 검증(설계 §9-3) 후
-// 구조화하며, 초기에는 원시 값을 그대로 보존한다.
+// ①②③④ 공통 응답. 물품·외자에만 있는 세부품목 중첩(prdctDtlList)은 실호출 검증(설계 §9-3)
+// 후 구조화해 필드로 추가하며, 그전까지는 이 타입에서 제외한다(formatPrespec가 매핑하지 않음).
 export interface Prespec {
   specRegistNo: string;
   productName: string;
