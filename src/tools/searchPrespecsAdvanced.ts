@@ -3,7 +3,8 @@ import type { DataGoKrClient, Params } from "@opendata-kr/core";
 import { ALL_KINDS, type Kind, advancedOp } from "../api/endpoints.js";
 import { formatPrespec } from "../format.js";
 import type { Prespec } from "../api/types.js";
-import { dateRangeParams, pagingParams, runList, type ListResult } from "./runList.js";
+import { dateRangeParams, pagingParams } from "@opendata-kr/core";
+import { runList, type ListResult } from "./runList.js";
 
 // 참고: ④ PPSSrch의 inqryDiv 의미는 ①과 다르다.
 // ④ = 1.접수일시 / 2.사전규격등록번호 / 3.참조번호 (①의 3은 변경일시라 혼동 주의).

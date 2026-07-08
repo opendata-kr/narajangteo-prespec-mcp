@@ -3,7 +3,8 @@ import type { DataGoKrClient, Params } from "@opendata-kr/core";
 import { ALL_KINDS, type Kind, byInstitutionOp } from "../api/endpoints.js";
 import { formatPrespec } from "../format.js";
 import type { Prespec } from "../api/types.js";
-import { dateRangeParams, pagingParams, runList, type ListResult } from "./runList.js";
+import { dateRangeParams, pagingParams } from "@opendata-kr/core";
+import { runList, type ListResult } from "./runList.js";
 
 export const searchByInstitutionInputShape = {
   kind: z

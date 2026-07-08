@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { DataGoKrClient } from "@opendata-kr/core";
+import { errMessage, withKeyHint } from "@opendata-kr/core";
 import { VERSION } from "./version.js";
 import {
   runSearchPrespecs,
@@ -29,14 +30,11 @@ function textResult(payload: unknown, isError = false) {
   };
 }
 
-async function guard<T>(run: () => Promise<T>) {
+async function guard<T>(client: DataGoKrClient, run: () => Promise<T>) {
   try {
     return textResult(await run());
   } catch (err) {
-    return textResult(
-      { error: err instanceof Error ? err.message : String(err) },
-      true,
-    );
+    return textResult({ error: withKeyHint(client, errMessage(err)) }, true);
   }
 }
 
@@ -58,7 +56,7 @@ export function createServer(client: DataGoKrClient): McpServer {
       inputSchema: searchPrespecsInputShape,
       annotations: READONLY,
     },
-    (args) => guard(() => runSearchPrespecs(client, args)),
+    (args) => guard(client, () => runSearchPrespecs(client, args)),
   );
 
   server.registerTool(
@@ -70,7 +68,7 @@ export function createServer(client: DataGoKrClient): McpServer {
       inputSchema: searchByInstitutionInputShape,
       annotations: READONLY,
     },
-    (args) => guard(() => runSearchByInstitution(client, args)),
+    (args) => guard(client, () => runSearchByInstitution(client, args)),
   );
 
   server.registerTool(
@@ -82,7 +80,7 @@ export function createServer(client: DataGoKrClient): McpServer {
       inputSchema: searchByProductInputShape,
       annotations: READONLY,
     },
-    (args) => guard(() => runSearchByProduct(client, args)),
+    (args) => guard(client, () => runSearchByProduct(client, args)),
   );
 
   server.registerTool(
@@ -94,7 +92,7 @@ export function createServer(client: DataGoKrClient): McpServer {
       inputSchema: searchAdvancedInputShape,
       annotations: READONLY,
     },
-    (args) => guard(() => runSearchAdvanced(client, args)),
+    (args) => guard(client, () => runSearchAdvanced(client, args)),
   );
 
   server.registerTool(
@@ -106,7 +104,7 @@ export function createServer(client: DataGoKrClient): McpServer {
       inputSchema: getOpinionsInputShape,
       annotations: READONLY,
     },
-    (args) => guard(() => runGetOpinions(client, args)),
+    (args) => guard(client, () => runGetOpinions(client, args)),
   );
 
   return server;

@@ -1,4 +1,5 @@
 import type { DataGoKrClient, Params, RawItem } from "@opendata-kr/core";
+import { fanOut, withKeyHint, errMessage } from "@opendata-kr/core";
 import type { Kind } from "../api/endpoints.js";
 
 export type KindResult<T> =
@@ -10,8 +11,8 @@ export interface ListResult<T> {
   results: Partial<Record<Kind, KindResult<T>>>;
 }
 
-// 업무구분별로 opFor(kind) 오퍼레이션을 병렬 호출하고 format으로 정제한다.
-// 한 구분의 실패는 그 구분에만 error로 담고 나머지는 정상 반환한다.
+// 업무구분별로 opFor(kind) 오퍼레이션을 core fanOut으로 병렬 호출하고 kind 결과맵으로 부분실패를 격리한다.
+// 반환 shape(KindResult·query 래퍼)는 발행된 도구 출력계약이라 유지한다.
 export async function runList<T>(
   client: DataGoKrClient,
   opFor: (kind: Kind) => string,
@@ -20,38 +21,23 @@ export async function runList<T>(
   query: unknown,
   format: (raw: RawItem) => T,
 ): Promise<ListResult<T>> {
-  const settled = await Promise.allSettled(
-    kinds.map((kind) => client.call(opFor(kind), { ...baseParams })),
+  const { results: outcomes } = await fanOut(
+    kinds,
+    async (kind) => {
+      const op = await client.call(opFor(kind), { ...baseParams });
+      return { totalCount: op.totalCount, items: op.items.map(format) };
+    },
+    {
+      label: (kind) => kind,
+      concurrency: kinds.length,
+      mapError: (reason) => withKeyHint(client, errMessage(reason)),
+    },
   );
 
   const results: Partial<Record<Kind, KindResult<T>>> = {};
-  kinds.forEach((kind, i) => {
-    const s = settled[i]!;
-    if (s.status === "fulfilled") {
-      results[kind] = {
-        totalCount: s.value.totalCount,
-        items: s.value.items.map(format),
-      };
-    } else {
-      const reason = s.reason;
-      results[kind] = {
-        error: reason instanceof Error ? reason.message : String(reason),
-      };
-    }
-  });
-
+  for (const kind of kinds) {
+    const o = outcomes[kind]!;
+    results[kind] = o.ok ? o.value : { error: o.error };
+  }
   return { query, results };
-}
-
-// 페이징 공통 파라미터.
-export function pagingParams(page?: number, pageSize?: number): Params {
-  return { pageNo: page ?? 1, numOfRows: pageSize ?? 10 };
-}
-
-// YYYYMMDD → inqryBgnDt/inqryEndDt(YYYYMMDDHHMM). 시작 0000, 종료 2359.
-export function dateRangeParams(startDate?: string, endDate?: string): Params {
-  const p: Params = {};
-  if (startDate) p.inqryBgnDt = `${startDate}0000`;
-  if (endDate) p.inqryEndDt = `${endDate}2359`;
-  return p;
 }
