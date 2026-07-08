@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/opendata-kr/narajangteo-prespec-mcp/compare/v0.2.0...v0.2.1) (2026-07-08)
+
+
+### Bug Fixes
+
+* **api:** fan-out·파라미터·인증힌트·에러축약을 core 0.3.0으로 일원화 ([2eea700](https://github.com/opendata-kr/narajangteo-prespec-mcp/commit/2eea7001869fe436fff1b6c323b0144ddffd11f9))
+
 ## [0.2.0](https://github.com/opendata-kr/narajangteo-prespec-mcp/compare/v0.1.1...v0.2.0) (2026-07-07)
 
 
