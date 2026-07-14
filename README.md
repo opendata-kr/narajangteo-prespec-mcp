@@ -452,7 +452,7 @@ DATA_GO_KR_SERVICE_KEY=발급받은_Decoding_키 mcp-proxy --transport streamabl
 
 5개 도구 모두 읽기 전용 조회다. 20개 오퍼레이션을 조회 방식에 따라 묶었다. 아래 파라미터는 모든 도구에 공통이다.
 
-- `kind`: `string[]`. 업무구분 배열: `cnstwk`(공사) `servc`(용역) `thng`(물품) `frgcpt`(외자). 미지정 시 전 구분 병렬 조회
+- `kind`: `string[]`. 업무구분 배열: `cnstwk`(공사) `servc`(용역) `thng`(물품) `frgcpt`(외자). 미지정 시 전 구분 병렬 조회. 병렬 조회는 API 요청 4건을 소모하므로 업무구분을 알면 지정한다
 - `page`: `number`. 페이지 번호(기본 1)
 - `pageSize`: `number`. 페이지당 건수(기본 10, 최대 100)
 

@@ -15,7 +15,7 @@ export const searchAdvancedInputShape = {
     .array(z.enum(["cnstwk", "servc", "thng", "frgcpt"]))
     .optional()
     .describe(
-      "업무구분: cnstwk=공사, servc=용역, thng=물품, frgcpt=외자. 미지정 시 전 구분 병렬 조회",
+      "업무구분: cnstwk=공사, servc=용역, thng=물품, frgcpt=외자. 미지정 시 전 구분 병렬 조회로 API 요청 4건을 소모한다. 업무구분을 알면 지정해 인증키 일일 트래픽을 아낀다",
     ),
   startDate: z.string().optional().describe("접수 시작일 YYYYMMDD"),
   endDate: z.string().optional().describe("접수 종료일 YYYYMMDD"),
