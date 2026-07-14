@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/opendata-kr/narajangteo-prespec-mcp/compare/v0.3.0...v0.3.1) (2026-07-14)
+
+
+### Documentation
+
+* **roadmap:** 이행 라이브 재검증 백로그 등록 ([795284a](https://github.com/opendata-kr/narajangteo-prespec-mcp/commit/795284afd630af3dfad3fb8761cebc955ff8c341))
+
 ## [0.3.0](https://github.com/opendata-kr/narajangteo-prespec-mcp/compare/v0.2.1...v0.3.0) (2026-07-14)
 
 
