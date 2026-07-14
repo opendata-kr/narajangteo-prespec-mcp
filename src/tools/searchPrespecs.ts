@@ -1,7 +1,8 @@
 import { z } from "zod";
 import type { DataGoKrClient, Params } from "@opendata-kr/core";
-import { ALL_KINDS, type Kind, listOp } from "../api/endpoints.js";
+import { ALL_KINDS, listOp } from "../api/endpoints.js";
 import { formatPrespec } from "../format.js";
+import { RawPrespecSchema } from "../api/schema.js";
 import type { Prespec } from "../api/types.js";
 import { dateRangeParams, pagingParams } from "@opendata-kr/core";
 import { runList, type ListResult } from "./runList.js";
@@ -51,5 +52,5 @@ export function runSearchPrespecs(
     Object.assign(params, dateRangeParams(args.startDate, args.endDate));
   }
 
-  return runList(client, listOp, params, kinds, args, formatPrespec);
+  return runList(client, listOp, params, kinds, args, RawPrespecSchema, formatPrespec);
 }

@@ -1,7 +1,8 @@
 import { z } from "zod";
 import type { DataGoKrClient, Params } from "@opendata-kr/core";
-import { ALL_KINDS, type Kind, byInstitutionOp } from "../api/endpoints.js";
+import { ALL_KINDS, byInstitutionOp } from "../api/endpoints.js";
 import { formatPrespec } from "../format.js";
+import { RawPrespecSchema } from "../api/schema.js";
 import type { Prespec } from "../api/types.js";
 import { dateRangeParams, pagingParams } from "@opendata-kr/core";
 import { runList, type ListResult } from "./runList.js";
@@ -36,5 +37,5 @@ export function runSearchByInstitution(
   if (args.orderInstitution) params.orderInsttNm = args.orderInstitution;
   if (args.demandInstitution) params.rlDminsttNm = args.demandInstitution;
 
-  return runList(client, byInstitutionOp, params, kinds, args, formatPrespec);
+  return runList(client, byInstitutionOp, params, kinds, args, RawPrespecSchema, formatPrespec);
 }

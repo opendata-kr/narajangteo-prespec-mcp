@@ -446,7 +446,7 @@ DATA_GO_KR_SERVICE_KEY=발급받은_Decoding_키 mcp-proxy --transport streamabl
 | 환경변수 | 필수 | 비밀 | 기본값 | 설명 |
 |---|---|---|---|---|
 | `DATA_GO_KR_SERVICE_KEY` | 예 | 예 | (없음) | 공공데이터포털 **Decoding(원본)** 인증키 |
-| `DATA_GO_KR_BASE_URL` | 아니오 | 아니오 | `https://apis.data.go.kr` | 게이트웨이 base 오버라이드 |
+| `DATA_GO_KR_BASE_URL` | 아니오 | 아니오 | `https://apis.data.go.kr/1230000/ao/HrcspSsstndrdInfoService` | 서비스 경로를 포함한 전체 URL 오버라이드 |
 
 ## 도구
 
@@ -518,7 +518,7 @@ DATA_GO_KR_SERVICE_KEY=발급받은_Decoding_키 mcp-proxy --transport streamabl
 | `startDate` | `string` | 조회 시작일 `YYYYMMDD` |
 | `endDate` | `string` | 조회 종료일 `YYYYMMDD` |
 
-모든 도구의 반환은 `{ query, results }`다. `results`는 업무구분별로 `{ totalCount, items }`를, 실패 시 해당 구분에 `{ error }`를 담는다.
+모든 도구의 반환은 `{ query, results }`다. `results`는 업무구분별로 `{ totalCount, invalidCount, items }`를, 실패 시 해당 구분에 `{ error }`를 담는다. `invalidCount`는 응답 스키마 검증에서 탈락해 `items`에서 제외된 건수다. 0이 아니면 API 응답 필드가 예고 없이 바뀐 신호이므로 [이슈로 알려주면](https://github.com/opendata-kr/narajangteo-prespec-mcp/issues) 반영한다.
 
 ## 응답 필드
 
