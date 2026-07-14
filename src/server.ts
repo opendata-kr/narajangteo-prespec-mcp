@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { DataGoKrClient } from "@opendata-kr/core";
-import { errMessage, withKeyHint } from "@opendata-kr/core";
+import { guard, READONLY } from "@opendata-kr/core";
 import { VERSION } from "./version.js";
 import {
   runSearchPrespecs,
@@ -23,24 +23,6 @@ import {
   getOpinionsInputShape,
 } from "./tools/getPrespecOpinions.js";
 
-function textResult(payload: unknown, isError = false) {
-  return {
-    content: [{ type: "text" as const, text: JSON.stringify(payload, null, 2) }],
-    ...(isError ? { isError: true } : {}),
-  };
-}
-
-async function guard<T>(client: DataGoKrClient, run: () => Promise<T>) {
-  try {
-    return textResult(await run());
-  } catch (err) {
-    return textResult({ error: withKeyHint(client, errMessage(err)) }, true);
-  }
-}
-
-// 조회 전용 도구 공통 애노테이션: 환경을 바꾸지 않고(readOnlyHint), 외부 API를 호출한다(openWorldHint).
-const READONLY = { readOnlyHint: true, openWorldHint: true } as const;
-
 export function createServer(client: DataGoKrClient): McpServer {
   const server = new McpServer({
     name: "narajangteo-prespec-mcp",
@@ -56,7 +38,7 @@ export function createServer(client: DataGoKrClient): McpServer {
       inputSchema: searchPrespecsInputShape,
       annotations: READONLY,
     },
-    (args) => guard(client, () => runSearchPrespecs(client, args)),
+    (args) => guard(() => runSearchPrespecs(client, args)),
   );
 
   server.registerTool(
@@ -68,7 +50,7 @@ export function createServer(client: DataGoKrClient): McpServer {
       inputSchema: searchByInstitutionInputShape,
       annotations: READONLY,
     },
-    (args) => guard(client, () => runSearchByInstitution(client, args)),
+    (args) => guard(() => runSearchByInstitution(client, args)),
   );
 
   server.registerTool(
@@ -80,7 +62,7 @@ export function createServer(client: DataGoKrClient): McpServer {
       inputSchema: searchByProductInputShape,
       annotations: READONLY,
     },
-    (args) => guard(client, () => runSearchByProduct(client, args)),
+    (args) => guard(() => runSearchByProduct(client, args)),
   );
 
   server.registerTool(
@@ -92,7 +74,7 @@ export function createServer(client: DataGoKrClient): McpServer {
       inputSchema: searchAdvancedInputShape,
       annotations: READONLY,
     },
-    (args) => guard(client, () => runSearchAdvanced(client, args)),
+    (args) => guard(() => runSearchAdvanced(client, args)),
   );
 
   server.registerTool(
@@ -104,7 +86,7 @@ export function createServer(client: DataGoKrClient): McpServer {
       inputSchema: getOpinionsInputShape,
       annotations: READONLY,
     },
-    (args) => guard(client, () => runGetOpinions(client, args)),
+    (args) => guard(() => runGetOpinions(client, args)),
   );
 
   return server;

@@ -1,7 +1,8 @@
 import { z } from "zod";
 import type { DataGoKrClient, Params } from "@opendata-kr/core";
-import { ALL_KINDS, type Kind, byProductOp } from "../api/endpoints.js";
+import { ALL_KINDS, byProductOp } from "../api/endpoints.js";
 import { formatPrespec } from "../format.js";
+import { RawPrespecSchema } from "../api/schema.js";
 import type { Prespec } from "../api/types.js";
 import { dateRangeParams, pagingParams } from "@opendata-kr/core";
 import { runList, type ListResult } from "./runList.js";
@@ -38,5 +39,5 @@ export function runSearchByProduct(
   if (args.detailProductCode) params.dtilPrdctClsfcNo = args.detailProductCode;
   if (args.detailProductName) params.dtilPrdctClsfcNoNm = args.detailProductName;
 
-  return runList(client, byProductOp, params, kinds, args, formatPrespec);
+  return runList(client, byProductOp, params, kinds, args, RawPrespecSchema, formatPrespec);
 }

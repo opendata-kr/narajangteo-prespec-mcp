@@ -1,7 +1,8 @@
 import { z } from "zod";
 import type { DataGoKrClient, Params } from "@opendata-kr/core";
-import { ALL_KINDS, type Kind, opinionOp } from "../api/endpoints.js";
+import { ALL_KINDS, opinionOp } from "../api/endpoints.js";
 import { formatPrespecOpinion } from "../format.js";
+import { RawPrespecOpinionSchema } from "../api/schema.js";
 import type { PrespecOpinion } from "../api/types.js";
 import { dateRangeParams, pagingParams } from "@opendata-kr/core";
 import { runList, type ListResult } from "./runList.js";
@@ -42,5 +43,13 @@ export function runGetOpinions(
     Object.assign(params, dateRangeParams(args.startDate, args.endDate));
   }
 
-  return runList(client, opinionOp, params, kinds, args, formatPrespecOpinion);
+  return runList(
+    client,
+    opinionOp,
+    params,
+    kinds,
+    args,
+    RawPrespecOpinionSchema,
+    formatPrespecOpinion,
+  );
 }

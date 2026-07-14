@@ -1,4 +1,4 @@
-import type { RawItem } from "@opendata-kr/core";
+import type { RawPrespec, RawPrespecOpinion } from "./api/schema.js";
 import type { Prespec, PrespecOpinion, ProductDetail } from "./api/types.js";
 
 // prdctDtlList packed string `[순번^세부품명번호^세부품명],[...]`을 배열로 파싱한다.
@@ -13,47 +13,49 @@ function parseProductDetails(raw: string): ProductDetail[] {
   });
 }
 
-export function formatPrespec(raw: RawItem): Prespec {
-  const pick = (k: string): string => raw[k] ?? "";
+export function formatPrespec(raw: RawPrespec): Prespec {
   return {
-    specRegistNo: pick("bfSpecRgstNo"),
-    productName: pick("prdctClsfcNoNm"),
-    assignedBudget: pick("asignBdgtAmt"),
-    orderInstitution: pick("orderInsttNm"),
-    demandInstitution: pick("rlDminsttNm"),
-    registDt: pick("rgstDt"),
-    changeDt: pick("chgDt"),
-    opinionCloseDt: pick("opninRgstClseDt"),
-    receiptDt: pick("rcptDt"),
-    refNo: pick("refNo"),
-    bidNoticeList: pick("bidNtceNoList"),
-    businessDivision: pick("bsnsDivNm"),
-    deliveryDays: pick("dlvrDaynum"),
-    deliveryDeadline: pick("dlvrTmlmtDt"),
-    officialName: pick("ofclNm"),
-    officialTel: pick("ofclTelNo"),
-    swBusinessYn: pick("swBizObjYn"),
-    productDetailList: parseProductDetails(pick("prdctDtlList")),
+    specRegistNo: raw.bfSpecRgstNo,
+    productName: raw.prdctClsfcNoNm ?? "",
+    assignedBudget: raw.asignBdgtAmt ?? "",
+    orderInstitution: raw.orderInsttNm ?? "",
+    demandInstitution: raw.rlDminsttNm ?? "",
+    registDt: raw.rgstDt ?? "",
+    changeDt: raw.chgDt ?? "",
+    opinionCloseDt: raw.opninRgstClseDt ?? "",
+    receiptDt: raw.rcptDt ?? "",
+    refNo: raw.refNo ?? "",
+    bidNoticeList: raw.bidNtceNoList ?? "",
+    businessDivision: raw.bsnsDivNm ?? "",
+    deliveryDays: raw.dlvrDaynum ?? "",
+    deliveryDeadline: raw.dlvrTmlmtDt ?? "",
+    officialName: raw.ofclNm ?? "",
+    officialTel: raw.ofclTelNo ?? "",
+    swBusinessYn: raw.swBizObjYn ?? "",
+    productDetailList: parseProductDetails(raw.prdctDtlList ?? ""),
   };
 }
 
-export function formatPrespecOpinion(raw: RawItem): PrespecOpinion {
-  const pick = (k: string): string => raw[k] ?? "";
-  const fileUrls = [1, 2, 3, 4, 5]
-    .map((n) => pick(`specDocOpninFileUrl${n}`))
-    .filter((u) => u !== "");
+export function formatPrespecOpinion(raw: RawPrespecOpinion): PrespecOpinion {
+  const fileUrls = [
+    raw.specDocOpninFileUrl1,
+    raw.specDocOpninFileUrl2,
+    raw.specDocOpninFileUrl3,
+    raw.specDocOpninFileUrl4,
+    raw.specDocOpninFileUrl5,
+  ].filter((u): u is string => u !== undefined && u !== "");
   return {
-    specRegistNo: pick("bfSpecRgstNo"),
-    refNo: pick("refNo"),
-    opinionNo: pick("opninNo"),
-    replyNo: pick("rplyNo"),
-    opinionTitle: pick("opninTitl"),
-    opinionContent: pick("opninCntnts"),
-    writerCorp: pick("mkngCorpNm"),
-    writerName: pick("mkrNm"),
-    inputDt: pick("inptDt"),
-    writerTel: pick("mkrTel"),
-    writerEmail: pick("mkrEmail"),
+    specRegistNo: raw.bfSpecRgstNo,
+    refNo: raw.refNo ?? "",
+    opinionNo: raw.opninNo ?? "",
+    replyNo: raw.rplyNo ?? "",
+    opinionTitle: raw.opninTitl ?? "",
+    opinionContent: raw.opninCntnts ?? "",
+    writerCorp: raw.mkngCorpNm ?? "",
+    writerName: raw.mkrNm ?? "",
+    inputDt: raw.inptDt ?? "",
+    writerTel: raw.mkrTel ?? "",
+    writerEmail: raw.mkrEmail ?? "",
     opinionFileUrls: fileUrls,
   };
 }
